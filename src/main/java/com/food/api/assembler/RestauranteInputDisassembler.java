@@ -2,11 +2,13 @@ package com.food.api.assembler;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.food.api.model.input.RestauranteInput;
 import com.food.domain.model.Cozinha;
 import com.food.domain.model.Restaurante;
 
+@Component
 public class RestauranteInputDisassembler {
 
 	@Autowired
