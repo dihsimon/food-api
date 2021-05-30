@@ -1,8 +1,9 @@
 package com.food.domain.model;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+
 import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,7 +39,7 @@ public class Usuario {
 
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
-	private LocalDateTime dataCadastro;
+	private OffsetDateTime dataCadastro;
 
 	@ManyToMany
 	@JoinTable(name = "usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "grupo_id"))
