@@ -4,11 +4,21 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.food.api.model.EnderecoModel;
+import com.food.domain.model.Endereco;
+
 @Configuration
 public class ModelMapperConfig {
 
 	@Bean
 	public ModelMapper modelmapper() {
-		return new ModelMapper();
+		var modelMapper = new ModelMapper();
+		
+		var toEnderecoModelTypeMap = modelMapper.createTypeMap(Endereco.class, EnderecoModel.class);
+		toEnderecoModelTypeMap.<String>addMapping(
+				src -> src.getCidade().getEstado().getNome(),
+				(dest, value) -> dest.getCidade().setEstado(value));
+		
+		return modelMapper;
 	}
 }

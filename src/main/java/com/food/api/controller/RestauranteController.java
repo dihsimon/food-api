@@ -17,6 +17,7 @@ import com.food.api.assembler.RestauranteInputDisassembler;
 import com.food.api.assembler.RestauranteModelAssembler;
 import com.food.api.model.RestauranteModel;
 import com.food.api.model.input.RestauranteInput;
+import com.food.domain.exception.CidadeNaoEncontradaException;
 import com.food.domain.exception.CozinhaNaoEncontradaException;
 import com.food.domain.exception.NegocioException;
 import com.food.domain.model.Restaurante;
@@ -72,17 +73,17 @@ public class RestauranteController {
 			restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
 			return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
-		} catch (CozinhaNaoEncontradaException e) {
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
-	
+
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long restauranteId) {
 		cadastroRestaurante.ativar(restauranteId);
 	}
-	
+
 	@DeleteMapping("/{restauranteId}/inativar")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long restauranteId) {
