@@ -1,18 +1,15 @@
-package com.food.domain.respository.filter;
+package com.food.domain.model.filter;
 
 import java.time.OffsetDateTime;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
-
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PedidoFilter {
-
-	private Long clienteId;
+public class VendaDiariaFilter {
+	
 	private Long restauranteId;
 	
 	@DateTimeFormat(iso = ISO.DATE_TIME)
@@ -20,4 +17,5 @@ public class PedidoFilter {
 	
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	private OffsetDateTime dataCriacaoFim;
+
 }
