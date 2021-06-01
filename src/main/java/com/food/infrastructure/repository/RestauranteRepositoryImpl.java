@@ -1,8 +1,12 @@
 package com.food.infrastructure.repository;
 
+import static com.food.infrastructure.repository.specs.RestauranteSpecs.comFreteGratis;
+import static com.food.infrastructure.repository.specs.RestauranteSpecs.comNomeSemelhante;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Predicate;
@@ -11,12 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
+
 import com.food.domain.model.Restaurante;
 import com.food.domain.model.repository.RestauranteRepository;
 import com.food.domain.model.repository.RestauranteRepositoryQueries;
-
-import static com.food.infrastructure.repository.specs.RestauranteSpecs.comFreteGratis;
-import static com.food.infrastructure.repository.specs.RestauranteSpecs.comNomeSemelhante;
 
 @Repository
 public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
@@ -57,7 +59,8 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
 	@Override
 	public List<Restaurante> findComFreteGratis(String nome) {
-		return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+		return restauranteRepository.findAll(comFreteGratis()
+				.and(comNomeSemelhante(nome)));
 	}
 
 }

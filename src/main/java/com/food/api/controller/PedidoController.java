@@ -5,6 +5,10 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +29,9 @@ import com.food.domain.exception.NegocioException;
 import com.food.domain.model.Pedido;
 import com.food.domain.model.Usuario;
 import com.food.domain.model.repository.PedidoRepository;
+import com.food.domain.respository.filter.PedidoFilter;
 import com.food.domain.service.EmissaoPedidoService;
+import com.food.infrastructure.repository.specs.PedidoSpecs;
 
 @RestController
 @RequestMapping(value = "/pedidos")
@@ -47,17 +53,16 @@ public class PedidoController {
 	private PedidoInputDisassembler pedidoInputDisassembler;
 
 	@GetMapping
-	public List<PedidoResumoModel> listar() {
-		List<Pedido> todosPedidos = pedidoRepository.findAll();
+	public Page<PedidoResumoModel> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+		Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 
-		return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
-	}
+		List<PedidoResumoModel> pedidosResumoModel = pedidoResumoModelAssembler
+				.toCollectionModel(pedidosPage.getContent());
 
-	@GetMapping("/{pedidoId}")
-	public PedidoModel buscar(@PathVariable Long pedidoId) {
-		Pedido pedido = emissaoPedido.buscarOuFalhar(pedidoId);
+		Page<PedidoResumoModel> pedidosResumoModelPage = new PageImpl<>(pedidosResumoModel, pageable,
+				pedidosPage.getTotalElements());
 
-		return pedidoModelAssembler.toModel(pedido);
+		return pedidosResumoModelPage;
 	}
 
 	@PostMapping
@@ -76,6 +81,13 @@ public class PedidoController {
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
+	}
+
+	@GetMapping("/{codigoPedido}")
+	public PedidoModel buscar(@PathVariable String codigoPedido) {
+		Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
+
+		return pedidoModelAssembler.toModel(pedido);
 	}
 
 }
