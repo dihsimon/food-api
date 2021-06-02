@@ -1,4 +1,4 @@
-package com.food.api.exceptionhandler;
+package com.food.api.core.validation;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

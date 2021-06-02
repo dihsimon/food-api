@@ -1,4 +1,4 @@
-package com.food.api.exceptionhandler;
+package com.food.api.core.validation;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
