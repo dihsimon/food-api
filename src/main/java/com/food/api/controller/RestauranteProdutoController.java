@@ -1,9 +1,12 @@
 package com.food.api.controller;
 
 import java.util.List;
+
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.food.api.assembler.ProdutoInputDisassembler;
 import com.food.api.assembler.ProdutoModelAssembler;
 import com.food.api.model.ProdutoModel;
 import com.food.api.model.input.ProdutoInput;
+import com.food.api.openapi.controller.RestauranteProdutoControllerOpenApi;
 import com.food.domain.model.Produto;
 import com.food.domain.model.Restaurante;
 import com.food.domain.model.repository.ProdutoRepository;
@@ -24,8 +29,8 @@ import com.food.domain.service.CadastroProdutoService;
 import com.food.domain.service.CadastroRestauranteService;
 
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos")
-public class RestauranteProdutoController {
+@RequestMapping(path = "/restaurantes/{restauranteId}/produtos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteProdutoController implements RestauranteProdutoControllerOpenApi {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
@@ -42,22 +47,24 @@ public class RestauranteProdutoController {
 	@Autowired
 	private ProdutoInputDisassembler produtoInputDisassembler;
 
+	@Override
 	@GetMapping
-	public List<ProdutoModel> listar(@PathVariable Long restauranteId, @RequestParam(required = false) boolean incluirInativos) {
+	public List<ProdutoModel> listar(@PathVariable Long restauranteId,
+			@RequestParam(required = false) boolean incluirInativos) {
 		Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
-		
+
 		List<Produto> todosProdutos = null;
-		
-		if(incluirInativos) {
-			todosProdutos= produtoRepository.findAtivosByRestaurante(restaurante);
-		}else {
+
+		if (incluirInativos) {
 			todosProdutos = produtoRepository.findTodosByRestaurante(restaurante);
+		} else {
+			todosProdutos = produtoRepository.findAtivosByRestaurante(restaurante);
 		}
-		
 
 		return produtoModelAssembler.toCollectionModel(todosProdutos);
 	}
 
+	@Override
 	@GetMapping("/{produtoId}")
 	public ProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 		Produto produto = cadastroProduto.buscarOuFalhar(restauranteId, produtoId);
@@ -65,6 +72,7 @@ public class RestauranteProdutoController {
 		return produtoModelAssembler.toModel(produto);
 	}
 
+	@Override
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ProdutoModel adicionar(@PathVariable Long restauranteId, @RequestBody @Valid ProdutoInput produtoInput) {
@@ -78,6 +86,7 @@ public class RestauranteProdutoController {
 		return produtoModelAssembler.toModel(produto);
 	}
 
+	@Override
 	@PutMapping("/{produtoId}")
 	public ProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@RequestBody @Valid ProdutoInput produtoInput) {
