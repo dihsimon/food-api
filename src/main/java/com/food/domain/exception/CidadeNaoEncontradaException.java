@@ -1,5 +1,8 @@
 package com.food.domain.exception;
 
+/**
+ * Incluindo comentario de Exceção
+ */
 public class CidadeNaoEncontradaException extends EntidadeNaoEncontradaException {
 
     private static final long serialVersionUID = 1L;
